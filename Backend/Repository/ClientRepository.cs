@@ -17,7 +17,10 @@ namespace Backend.Repository
 
         public async Task<Client> GetClientByIdAsync(int id)
         {
-            return await _context.Clients.FindAsync(id);
+            return await _context.Clients
+                .Include(c => c.Account)
+                .Include(c => c.Transactions)
+                .FirstOrDefaultAsync(c => c.ClientID == id);
         }
 
         public async Task<IEnumerable<Client>> SearchClientsAsync(string searchTerm)
@@ -43,6 +46,14 @@ namespace Backend.Repository
 
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Client>> GetClients()
+        {
+            return await _context.Clients
+            .Include(c => c.Account)
+            .Include(s => s.Transactions)
+            .ToListAsync();
         }
     }
 }

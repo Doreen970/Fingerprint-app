@@ -18,7 +18,7 @@ namespace Backend.Repository
         public async Task<IEnumerable<Device>> GetDevicesByStaffIdAsync(string staffId)
         {
             return await _context.Devices
-                                 .Where(d => d.StaffID == staffId)
+                                 .Where(d => d.StaffId == staffId)
                                  .ToListAsync();
         }
 
@@ -29,7 +29,7 @@ namespace Backend.Repository
                 DeviceName = deviceDto.DeviceName,
                 SerialNumber= deviceDto.SerialNumber,
                 DateAdded = deviceDto.DateAdded,
-                StaffID = deviceDto.StaffID
+                StaffId = deviceDto.StaffId
             };
             _context.Devices.Add(device);
             await _context.SaveChangesAsync();
@@ -50,7 +50,7 @@ namespace Backend.Repository
             var device = await _context.Devices.FindAsync(deviceId);
             if (device != null)
             {
-                device.StaffID = staffId;
+                device.StaffId = staffId;
                 _context.Devices.Update(device);
                 await _context.SaveChangesAsync();
             }

@@ -19,6 +19,13 @@ namespace Backend.Controllers
             _clientRepository = clientRepository;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAllClients()
+        {
+            var clients = await _clientRepository.GetClients();
+            return Ok(clients);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetClientById(int id)
         {

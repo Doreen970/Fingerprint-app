@@ -48,7 +48,7 @@ namespace Backend.Data
             modelBuilder.Entity<Device>()
                 .HasOne(d => d.Staff)
                 .WithMany(s => s.Devices)
-                .HasForeignKey(d => d.StaffID)
+                .HasForeignKey(d => d.StaffId)
                 .IsRequired(false);
 
             // Account and Client: One-to-One relationship

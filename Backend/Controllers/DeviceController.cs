@@ -30,7 +30,8 @@ namespace Backend.Controllers
         public async Task<IActionResult> AddDevice(DeviceDto deviceDto)  
         {
             await _deviceRepository.AddDeviceAsync(deviceDto);
-            return CreatedAtAction(nameof(GetDevicesByStaffId), deviceDto);
+
+            return CreatedAtAction(nameof(GetDevicesByStaffId), new { staffId = deviceDto.StaffId }, deviceDto);
         }
 
         [HttpDelete("{deviceId}")]

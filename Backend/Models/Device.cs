@@ -9,7 +9,7 @@ namespace Backend.Models
         public string DeviceName { get; set; }
         public string SerialNumber { get; set; }
         public DateTime DateAdded { get; set; }
-        public string? StaffID { get; set; }
+        public string? StaffId { get; set; }
         public Staff Staff { get; set; }
     }
 }

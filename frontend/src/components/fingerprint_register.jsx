@@ -49,7 +49,7 @@ const FingerprintRegister = () => {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({ success: true, data: 'dummy-fingerprint-data' });
-      }, 2000); // Simulate a 2-second fingerprint scan
+      }, 4000); // Simulate a 4-second fingerprint scan
     });
   };
 

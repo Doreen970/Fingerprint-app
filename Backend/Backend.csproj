@@ -7,7 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+      <Folder Include="Data\" />
+      <Folder Include="Interfaces\" />
+      <Folder Include="Service\" />
+      <Folder Include="Repository\" />
     </ItemGroup>
 
 </Project>

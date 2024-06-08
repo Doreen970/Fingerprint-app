@@ -1,10 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Backend.Models;
 
-namespace Backend.Models
+namespace Backend.Dtos
 {
-    public class Transaction
+    public class TransactionDto
     {
-        [Key]
         public int Id { get; set; }
         public int ClientId { get; set; }
         public Client Client { get; set; }

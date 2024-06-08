@@ -1,11 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Backend.Models
+﻿namespace Backend.Dtos
 {
-    public class Client
+    public class ClientDto
     {
-        [Key]
-        public int ClientID { get; set; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
@@ -14,7 +10,5 @@ namespace Backend.Models
         public string BankAccountNumber { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         public byte[] FingerprintData { get; set; }
-        public Account Account { get; set; }
-        public ICollection<Transaction> Transactions { get; set; }
     }
 }

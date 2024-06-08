@@ -1,15 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Backend.Models
+﻿namespace Backend.Dtos
 {
-    public class Device
+    public class DeviceDto
     {
-        [Key]
-        public int DeviceID { get; set; }
         public string DeviceName { get; set; }
         public string SerialNumber { get; set; }
         public DateTime DateAdded { get; set; }
         public string? StaffID { get; set; }
-        public Staff Staff { get; set; }
     }
 }

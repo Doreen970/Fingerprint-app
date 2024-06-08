@@ -42,7 +42,7 @@ const ResetRequest = () => {
             type="email"
             id="email"
             value={email}
-            placeholder='wrire your email'
+            placeholder='write your email'
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>

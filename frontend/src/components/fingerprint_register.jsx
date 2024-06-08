@@ -55,10 +55,10 @@ const FingerprintRegister = () => {
 
   return (
     <div>
-      <h2>Register Fingerprint</h2>
-      <button onClick={handleFingerprintScan}>Scan Fingerprint</button>
+      <h2 className="text-3xl text-center mt-6 font-bold">Register Fingerprint</h2>
+      <button className="w-[40%] bg-blue-600 text-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800" onClick={handleFingerprintScan}>Scan Fingerprint</button>
       {message && <p>{message}</p>}
-      <button onClick={handleSaveFingerprint} disabled={!isFingerprintCaptured}>
+      <button className="w-[40%] bg-blue-600 text-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800" onClick={handleSaveFingerprint} disabled={!isFingerprintCaptured}>
         Finish
       </button>
     </div>

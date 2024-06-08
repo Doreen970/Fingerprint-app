@@ -6,15 +6,14 @@ import Dashboard from './components/Dashboard'
 import Register from './components/Register'
 
 function App() {
-  
+
   return (
     <Router>
       <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route exact path="/reset-request" element={<ResetRequest />} />
-      <Route exact path="/dashboard" element={<Dashboard />} />
-      <Route exact path="/register" element={<Register />} />
-      
+        <Route path="/login" element={<Login />} />
+        <Route exact path="/reset-request" element={<ResetRequest />} />
+        <Route exact path="/dashboard" element={<Dashboard />} />
+        <Route exact path="/register" element={<Register />} />
       </Routes>
     </Router>
   )

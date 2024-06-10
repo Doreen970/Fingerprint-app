@@ -19,6 +19,14 @@ namespace Backend.Controllers
             _deviceRepository = deviceRepository;
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllDevices()
+        {
+            var devices = await _deviceRepository.GetAllDevicesAsync();
+            return Ok(devices);
+        }
+
         [HttpGet("staff/{staffId}")]
         public async Task<IActionResult> GetDevicesByStaffId(string staffId)
         {
@@ -27,12 +35,13 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddDevice(DeviceDto deviceDto)  
+        public async Task<IActionResult> AddDevice(DeviceDto deviceDto)
         {
             await _deviceRepository.AddDeviceAsync(deviceDto);
 
-            return CreatedAtAction(nameof(GetDevicesByStaffId), new { staffId = deviceDto.StaffId }, deviceDto);
+            return Ok(new { message = "Device successfully added." });
         }
+
 
         [HttpDelete("{deviceId}")]
         public async Task<IActionResult> DeleteDevice(int deviceId)

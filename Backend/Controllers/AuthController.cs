@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using Backend.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Backend.Controllers
 {
@@ -16,12 +17,14 @@ namespace Backend.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<Staff> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<Staff> _signInManager;
 
-        public AuthController(UserManager<Staff> userManager, ITokenService tokenService, SignInManager<Staff> signInManager)
+        public AuthController(UserManager<Staff> userManager, RoleManager<IdentityRole> roleManager, ITokenService tokenService, SignInManager<Staff> signInManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
         }
@@ -46,12 +49,23 @@ namespace Backend.Controllers
 
                 if (result.Succeeded)
                 {
+                    // Check if the "Staff" role exists
+                    if (!await _roleManager.RoleExistsAsync("Staff"))
+                    {
+                        // If the role doesn't exist, create it
+                        await _roleManager.CreateAsync(new IdentityRole("Staff"));
+                    }
+
+                    // Assign the "Staff" role to the user
                     await _userManager.AddToRoleAsync(staff, "Staff");
+
+                    var roles = await _userManager.GetRolesAsync(staff);
 
                     return Ok(new NewUserDto
                     {
                         UserName = staff.UserName,
                         Email = staff.Email,
+                        Role = roles.FirstOrDefault(),
                         Token = _tokenService.CreateToken(staff)
                     });
                 }
@@ -62,20 +76,17 @@ namespace Backend.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception
                 Console.WriteLine($"An error occurred: {ex.Message}");
 
-                // Check if there's an inner exception
                 if (ex.InnerException != null)
                 {
                     Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
                 }
 
-                // Return an appropriate response to the client
                 return StatusCode(500, "An error occurred while saving changes to the database.");
             }
-
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -93,12 +104,16 @@ namespace Backend.Controllers
             if (!result.Succeeded)
                 return Unauthorized("Invalid Email or Password");
 
+            var roles = await _userManager.GetRolesAsync(user);
+
             return Ok(new NewUserDto
             {
                 UserName = user.UserName,
                 Email = user.Email,
+                Role = roles.FirstOrDefault(), 
                 Token = _tokenService.CreateToken(user)
             });
         }
+
     }
 }

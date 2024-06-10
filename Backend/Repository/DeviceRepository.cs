@@ -15,6 +15,11 @@ namespace Backend.Repository
             _context = context;
         }
 
+        public async Task<List<Device>> GetAllDevicesAsync()
+        {
+            return await _context.Devices.ToListAsync();
+        }
+
         public async Task<IEnumerable<Device>> GetDevicesByStaffIdAsync(string staffId)
         {
             return await _context.Devices

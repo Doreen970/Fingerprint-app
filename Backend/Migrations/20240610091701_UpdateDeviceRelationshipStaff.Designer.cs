@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240608135418_Initial")]
-    partial class Initial
+    [Migration("20240610091701_UpdateDeviceRelationshipStaff")]
+    partial class UpdateDeviceRelationshipStaff
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,9 +115,49 @@ namespace Backend.Migrations
 
                     b.HasKey("DeviceID");
 
-                    b.HasIndex("StaffId");
+                    b.HasIndex("StaffId")
+                        .IsUnique()
+                        .HasFilter("[StaffId] IS NOT NULL");
 
                     b.ToTable("Devices");
+                });
+
+            modelBuilder.Entity("Backend.Models.Loan", b =>
+                {
+                    b.Property<int>("LoanId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoanId"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("InterestRate")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("LoanEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("LoanStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("OutstandingAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("PrincipalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("LoanId");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("Loans");
                 });
 
             modelBuilder.Entity("Backend.Models.Privilege", b =>
@@ -137,7 +177,42 @@ namespace Backend.Migrations
                     b.ToTable("Privileges");
                 });
 
-            modelBuilder.Entity("Backend.Models.Service", b =>
+            modelBuilder.Entity("Backend.Models.Receipt", b =>
+                {
+                    b.Property<int>("TransactionId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TransactionId"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("BankAccountNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ServedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ServiceName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("TransactionId");
+
+                    b.ToTable("Receipts");
+                });
+
+            modelBuilder.Entity("Backend.Models.Services", b =>
                 {
                     b.Property<int>("ServiceID")
                         .ValueGeneratedOnAdd()
@@ -162,6 +237,88 @@ namespace Backend.Migrations
                     b.HasKey("ServiceID");
 
                     b.ToTable("Services");
+
+                    b.HasData(
+                        new
+                        {
+                            ServiceID = 1,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7211),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7214),
+                            ServiceCode = "CUST_REG",
+                            ServiceName = "Customer Registration"
+                        },
+                        new
+                        {
+                            ServiceID = 2,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7216),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7217),
+                            ServiceCode = "CASH_DEP",
+                            ServiceName = "Cash Deposit"
+                        },
+                        new
+                        {
+                            ServiceID = 3,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7218),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7218),
+                            ServiceCode = "CASH_WDL",
+                            ServiceName = "Cash Withdrawal"
+                        },
+                        new
+                        {
+                            ServiceID = 4,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7219),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7220),
+                            ServiceCode = "ATM_REG",
+                            ServiceName = "ATM Registration"
+                        },
+                        new
+                        {
+                            ServiceID = 5,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7221),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7222),
+                            ServiceCode = "EDIT_CUST",
+                            ServiceName = "Edit Customer Details"
+                        },
+                        new
+                        {
+                            ServiceID = 6,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7223),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7223),
+                            ServiceCode = "INV_PRINT",
+                            ServiceName = "Invoice Printing"
+                        },
+                        new
+                        {
+                            ServiceID = 7,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7224),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7225),
+                            ServiceCode = "LOAN_DISB",
+                            ServiceName = "Loan Disbursement"
+                        },
+                        new
+                        {
+                            ServiceID = 8,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7226),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7226),
+                            ServiceCode = "CHQ_RCV",
+                            ServiceName = "Cheque Receive"
+                        },
+                        new
+                        {
+                            ServiceID = 9,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7227),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7228),
+                            ServiceCode = "CURR_EXCH",
+                            ServiceName = "Currency Exchange"
+                        },
+                        new
+                        {
+                            ServiceID = 10,
+                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7229),
+                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7229),
+                            ServiceCode = "DEL_CUST",
+                            ServiceName = "Delete Customer"
+                        });
                 });
 
             modelBuilder.Entity("Backend.Models.Staff", b =>
@@ -262,6 +419,9 @@ namespace Backend.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
+                    b.Property<int>("ServiceID")
+                        .HasColumnType("int");
+
                     b.Property<string>("StaffId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -272,6 +432,8 @@ namespace Backend.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("ServiceID");
 
                     b.HasIndex("StaffId");
 
@@ -307,13 +469,13 @@ namespace Backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5a185177-fc3c-4d85-91d0-bcc60ee89d59",
+                            Id = "e19da598-4234-498b-843d-44b2b2fb4cde",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5d29cb00-a40a-4a5c-8cf9-76caa3a1b9c3",
+                            Id = "0bdd8187-5433-4144-b461-e18d5694596a",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });
@@ -439,10 +601,29 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Device", b =>
                 {
                     b.HasOne("Backend.Models.Staff", "Staff")
-                        .WithMany("Devices")
-                        .HasForeignKey("StaffId");
+                        .WithOne("Device")
+                        .HasForeignKey("Backend.Models.Device", "StaffId");
 
                     b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("Backend.Models.Loan", b =>
+                {
+                    b.HasOne("Backend.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Client", "Client")
+                        .WithMany("Loans")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("Backend.Models.Transaction", b =>
@@ -453,6 +634,12 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Backend.Models.Services", "Service")
+                        .WithMany()
+                        .HasForeignKey("ServiceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Backend.Models.Staff", "Staff")
                         .WithMany("Transactions")
                         .HasForeignKey("StaffId")
@@ -460,6 +647,8 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("Client");
+
+                    b.Navigation("Service");
 
                     b.Navigation("Staff");
                 });
@@ -520,12 +709,15 @@ namespace Backend.Migrations
                     b.Navigation("Account")
                         .IsRequired();
 
+                    b.Navigation("Loans");
+
                     b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("Backend.Models.Staff", b =>
                 {
-                    b.Navigation("Devices");
+                    b.Navigation("Device")
+                        .IsRequired();
 
                     b.Navigation("Transactions");
                 });

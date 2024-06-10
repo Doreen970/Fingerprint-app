@@ -16,5 +16,6 @@ namespace Backend.Models
         public byte[] FingerprintData { get; set; }
         public Account Account { get; set; }
         public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<Loan> Loans { get; set; }
     }
 }

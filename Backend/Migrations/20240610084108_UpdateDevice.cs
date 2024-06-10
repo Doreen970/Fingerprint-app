@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class UpdateDevice : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,6 +88,24 @@ namespace Backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Privileges", x => x.PrivilegeID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Receipts",
+                columns: table => new
+                {
+                    TransactionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ServiceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BankAccountNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ServedBy = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Receipts", x => x.TransactionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -261,6 +279,7 @@ namespace Backend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClientId = table.Column<int>(type: "int", nullable: false),
                     StaffId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ServiceID = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -279,6 +298,43 @@ namespace Backend.Migrations
                         principalTable: "Clients",
                         principalColumn: "ClientID",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Services_ServiceID",
+                        column: x => x.ServiceID,
+                        principalTable: "Services",
+                        principalColumn: "ServiceID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Loans",
+                columns: table => new
+                {
+                    LoanId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    PrincipalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    InterestRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    LoanStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LoanEndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OutstandingAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Loans", x => x.LoanId);
+                    table.ForeignKey(
+                        name: "FK_Loans_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "AccountId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Loans_Clients_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Clients",
+                        principalColumn: "ClientID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -286,8 +342,25 @@ namespace Backend.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5a185177-fc3c-4d85-91d0-bcc60ee89d59", null, "Admin", "ADMIN" },
-                    { "5d29cb00-a40a-4a5c-8cf9-76caa3a1b9c3", null, "Staff", "STAFF" }
+                    { "9fecb081-a7fc-4c23-8866-b02dbc012459", null, "Staff", "STAFF" },
+                    { "e8af4326-938a-40f6-8769-beacff922dd9", null, "Admin", "ADMIN" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Services",
+                columns: new[] { "ServiceID", "DateAdded", "DateUpdated", "ServiceCode", "ServiceName" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8498), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8501), "CUST_REG", "Customer Registration" },
+                    { 2, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8502), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8503), "CASH_DEP", "Cash Deposit" },
+                    { 3, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8504), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8504), "CASH_WDL", "Cash Withdrawal" },
+                    { 4, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8505), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8506), "ATM_REG", "ATM Registration" },
+                    { 5, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8508), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8508), "EDIT_CUST", "Edit Customer Details" },
+                    { 6, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8509), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8510), "INV_PRINT", "Invoice Printing" },
+                    { 7, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8511), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8511), "LOAN_DISB", "Loan Disbursement" },
+                    { 8, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8513), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8513), "CHQ_RCV", "Cheque Receive" },
+                    { 9, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8514), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8514), "CURR_EXCH", "Currency Exchange" },
+                    { 10, new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8515), new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8515), "DEL_CUST", "Delete Customer" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -341,9 +414,24 @@ namespace Backend.Migrations
                 column: "StaffId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Loans_AccountId",
+                table: "Loans",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Loans_ClientId",
+                table: "Loans",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Transactions_ClientId",
                 table: "Transactions",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_ServiceID",
+                table: "Transactions",
+                column: "ServiceID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_StaffId",
@@ -354,9 +442,6 @@ namespace Backend.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Accounts");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -376,10 +461,13 @@ namespace Backend.Migrations
                 name: "Devices");
 
             migrationBuilder.DropTable(
+                name: "Loans");
+
+            migrationBuilder.DropTable(
                 name: "Privileges");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "Receipts");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
@@ -388,7 +476,13 @@ namespace Backend.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Clients");

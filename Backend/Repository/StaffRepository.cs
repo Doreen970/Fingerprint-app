@@ -34,7 +34,7 @@ public class StaffRepository : IStaffRepository
     public async Task<IEnumerable<Staff>> GetAllStaffAsync()
     {
         return await _context.Staffs
-            .Include(s => s.Devices)
+            .Include(s => s.Device)
             .Include(s => s.Transactions)
             .ToListAsync();
     }

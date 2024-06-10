@@ -10,6 +10,8 @@ namespace Backend.Models
         public Client Client { get; set; }
         public string StaffId { get; set; }
         public Staff Staff { get; set; }
+        public int ServiceID { get; set; }
+        public Services Service { get; set; }
         public decimal Amount { get; set; }
         public DateTime Timestamp { get; set; }
     }

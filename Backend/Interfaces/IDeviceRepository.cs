@@ -9,5 +9,6 @@ namespace Backend.Interfaces
         Task AddDeviceAsync(DeviceDto deviceDto);
         Task DeleteDeviceAsync(int deviceId);
         Task AssignDeviceToStaffAsync(int deviceId, string staffId);
+        Task<List<Device>> GetAllDevicesAsync();
     }
 }

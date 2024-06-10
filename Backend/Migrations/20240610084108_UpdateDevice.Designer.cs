@@ -4,6 +4,7 @@ using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240610084108_UpdateDevice")]
+    partial class UpdateDevice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,9 +115,7 @@ namespace Backend.Migrations
 
                     b.HasKey("DeviceID");
 
-                    b.HasIndex("StaffId")
-                        .IsUnique()
-                        .HasFilter("[StaffId] IS NOT NULL");
+                    b.HasIndex("StaffId");
 
                     b.ToTable("Devices");
                 });
@@ -239,80 +240,80 @@ namespace Backend.Migrations
                         new
                         {
                             ServiceID = 1,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7211),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7214),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8498),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8501),
                             ServiceCode = "CUST_REG",
                             ServiceName = "Customer Registration"
                         },
                         new
                         {
                             ServiceID = 2,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7216),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7217),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8502),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8503),
                             ServiceCode = "CASH_DEP",
                             ServiceName = "Cash Deposit"
                         },
                         new
                         {
                             ServiceID = 3,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7218),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7218),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8504),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8504),
                             ServiceCode = "CASH_WDL",
                             ServiceName = "Cash Withdrawal"
                         },
                         new
                         {
                             ServiceID = 4,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7219),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7220),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8505),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8506),
                             ServiceCode = "ATM_REG",
                             ServiceName = "ATM Registration"
                         },
                         new
                         {
                             ServiceID = 5,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7221),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7222),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8508),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8508),
                             ServiceCode = "EDIT_CUST",
                             ServiceName = "Edit Customer Details"
                         },
                         new
                         {
                             ServiceID = 6,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7223),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7223),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8509),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8510),
                             ServiceCode = "INV_PRINT",
                             ServiceName = "Invoice Printing"
                         },
                         new
                         {
                             ServiceID = 7,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7224),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7225),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8511),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8511),
                             ServiceCode = "LOAN_DISB",
                             ServiceName = "Loan Disbursement"
                         },
                         new
                         {
                             ServiceID = 8,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7226),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7226),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8513),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8513),
                             ServiceCode = "CHQ_RCV",
                             ServiceName = "Cheque Receive"
                         },
                         new
                         {
                             ServiceID = 9,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7227),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7228),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8514),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8514),
                             ServiceCode = "CURR_EXCH",
                             ServiceName = "Currency Exchange"
                         },
                         new
                         {
                             ServiceID = 10,
-                            DateAdded = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7229),
-                            DateUpdated = new DateTime(2024, 6, 10, 9, 17, 0, 561, DateTimeKind.Utc).AddTicks(7229),
+                            DateAdded = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8515),
+                            DateUpdated = new DateTime(2024, 6, 10, 8, 41, 8, 78, DateTimeKind.Utc).AddTicks(8515),
                             ServiceCode = "DEL_CUST",
                             ServiceName = "Delete Customer"
                         });
@@ -466,13 +467,13 @@ namespace Backend.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e19da598-4234-498b-843d-44b2b2fb4cde",
+                            Id = "e8af4326-938a-40f6-8769-beacff922dd9",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "0bdd8187-5433-4144-b461-e18d5694596a",
+                            Id = "9fecb081-a7fc-4c23-8866-b02dbc012459",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });
@@ -598,8 +599,8 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Device", b =>
                 {
                     b.HasOne("Backend.Models.Staff", "Staff")
-                        .WithOne("Device")
-                        .HasForeignKey("Backend.Models.Device", "StaffId");
+                        .WithMany("Devices")
+                        .HasForeignKey("StaffId");
 
                     b.Navigation("Staff");
                 });
@@ -713,8 +714,7 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Staff", b =>
                 {
-                    b.Navigation("Device")
-                        .IsRequired();
+                    b.Navigation("Devices");
 
                     b.Navigation("Transactions");
                 });

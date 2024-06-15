@@ -28,6 +28,42 @@ namespace Backend.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            //change default Identity tables
+            modelBuilder.Entity<Staff>(b =>
+            {
+                b.ToTable("Users");
+            });
+
+            modelBuilder.Entity<IdentityUserClaim<string>>(b =>
+            {
+                b.ToTable("UserClaims");
+            });
+
+            modelBuilder.Entity<IdentityUserLogin<string>>(b =>
+            {
+                b.ToTable("UserLogins");
+            });
+
+            modelBuilder.Entity<IdentityUserToken<string>>(b =>
+            {
+                b.ToTable("UserTokens");
+            });
+
+            modelBuilder.Entity<IdentityRole>(b =>
+            {
+                b.ToTable("Roles");
+            });
+
+            modelBuilder.Entity<IdentityRoleClaim<string>>(b =>
+            {
+                b.ToTable("RoleClaims");
+            });
+
+            modelBuilder.Entity<IdentityUserRole<string>>(b =>
+            {
+                b.ToTable("UserRoles");
+            });
+
             // Transaction and Client: Many-to-One relationship
             modelBuilder.Entity<Transaction>()
                 .HasOne(t => t.Client)

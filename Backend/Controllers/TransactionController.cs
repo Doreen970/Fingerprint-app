@@ -1,91 +1,130 @@
 ﻿using Backend.Dtos;
 using Backend.Interfaces;
 using Backend.Models;
-using Microsoft.AspNetCore.Http;
+using Backend.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Backend.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     [Route("api/[controller]")]
     [ApiController]
-    public class TransactionController : ControllerBase
+    public class TransactionsController : ControllerBase
     {
         private readonly ITransactionRepository _transactionRepository;
-        private readonly IAccountMaskingService _accountMaskingService;
 
-        public TransactionController(ITransactionRepository transactionRepository, IAccountMaskingService accountMaskingService)
+        public TransactionsController(ITransactionRepository transactionRepository)
         {
             _transactionRepository = transactionRepository;
-            _accountMaskingService = accountMaskingService;
         }
 
-        [HttpPost("authorize")]
-        public async Task<IActionResult> AuthorizeTransaction(Transaction transaction)
+        [HttpPost("cash-deposit")]
+        public async Task<IActionResult> CashDeposit(int clientId, string staffId, decimal amount, [FromBody] byte[] fingerprint)
+        {
+            var result = await _transactionRepository.ProcessServiceAsync(clientId, staffId, serviceId: 1, amount: amount, fingerprint: fingerprint); 
+            if (!result.Success) return BadRequest("Transaction failed.");
+
+            var receipt = await _transactionRepository.GenerateReceipt(result.Transaction.Id);
+            if (receipt == null) return BadRequest("Failed to generate receipt.");
+
+            return Ok(receipt);
+        }
+
+        [HttpPost("cash-withdrawal")]
+        public async Task<IActionResult> CashWithdrawal(int clientId, string staffId, decimal amount, [FromBody] byte[] fingerprint)
+        {
+            var result = await _transactionRepository.ProcessServiceAsync(clientId, staffId, serviceId: 2, amount: amount, fingerprint: fingerprint); 
+            if (!result.Success) return BadRequest("Transaction failed.");
+
+            var receipt = await _transactionRepository.GenerateReceipt(result.Transaction.Id);
+            if (receipt == null) return BadRequest("Failed to generate receipt.");
+
+            return Ok(receipt);
+        }
+
+        [HttpPost("loan-disbursement")]
+        public async Task<IActionResult> LoanDisbursement(int clientId, string staffId, decimal amount, [FromBody] byte[] fingerprint)
+        {
+            var result = await _transactionRepository.ProcessServiceAsync(clientId, staffId, serviceId: 3, amount: amount, fingerprint: fingerprint); 
+            if (!result.Success) return BadRequest("Transaction failed.");
+
+            var receipt = await _transactionRepository.GenerateReceipt(result.Transaction.Id);
+            if (receipt == null) return BadRequest("Failed to generate receipt.");
+
+            return Ok(receipt);
+        }
+
+        [HttpPost("edit-customer")]
+        public async Task<IActionResult> EditCustomer(int clientId, string staffId, [FromBody] EditCustomerDto editCustomerDto)
         {
             try
             {
-                var authorizedTransaction = await _transactionRepository.AuthorizeTransactionAsync(transaction);
-                if (authorizedTransaction == null)
-                    return NotFound("Client not found or transaction authorization failed");
+                var result = await _transactionRepository.ProcessServiceAsync(
+                    clientId,
+                    staffId,
+                    serviceId: 4,
+                    amount: 0,
+                    fingerprint: null, // No fingerprint needed for basic details update
+                    editCustomerDto: editCustomerDto
+                );
 
-                // Retrieve the client
-                var client = await _transactionRepository.GetClientByIdAsync(transaction.ClientId);
+                if (!result.Success)
+                {
+                    return BadRequest("Customer edit failed.");
+                }
 
-                // Retrieve the staff member who served the client
-                var staff = await _transactionRepository.GetStaffByIdAsync(transaction.StaffId);
-
-                // Mask bank account number
-        string maskedAccountNumber = _accountMaskingService.MaskBankAccountNumber(client.BankAccountNumber);
-
-        // Construct the receipt
-        var receipt = new Receipt
-        {
-            TransactionId = authorizedTransaction.Id,
-            ClientName = $"{client.FirstName} {client.LastName}",
-            BankAccountNumber = maskedAccountNumber,
-            ServedBy = $"{staff.FirstName} {staff.LastName}",
-            ServiceName = authorizedTransaction.Service.ServiceName,
-            Amount = authorizedTransaction.Amount,
-            Timestamp = authorizedTransaction.Timestamp
-        };
-
-        return Ok(receipt);
+                return Ok(new { Message = "Customer edit successful.", Customer = editCustomerDto });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
 
 
-        [HttpGet("client/{clientId}")]
+        [HttpPost("currency-exchange")]
+        public async Task<IActionResult> CurrencyExchange(int clientId, string staffId, decimal amount, string currencyCode, [FromBody] byte[] fingerprint)
+        {
+            var result = await _transactionRepository.ProcessServiceAsync(clientId, staffId, serviceId: 5, amount: amount, fingerprint: fingerprint, currencyCode: currencyCode); 
+
+            if (!result.Success) return BadRequest("Currency exchange failed.");
+
+            return Ok(new { Message = "Currency exchange successful.", Amount = amount, CurrencyCode = currencyCode });
+        }
+
+
+        [HttpPost("delete-customer")]
+        public async Task<IActionResult> DeleteCustomer(int clientId, string staffId, [FromBody] byte[] fingerprint)
+        {
+            var result = await _transactionRepository.ProcessServiceAsync(clientId, staffId, serviceId: 6, amount: 0, fingerprint: fingerprint); 
+
+            if (!result.Success) return BadRequest("Customer deletion failed.");
+
+            return Ok(new { Message = "Customer deletion successful." });
+        }
+
+
+        [HttpGet("transactions-by-client")]
         public async Task<IActionResult> GetTransactionsByClientId(int clientId)
         {
             var transactions = await _transactionRepository.GetTransactionsByClientIdAsync(clientId);
             return Ok(transactions);
         }
 
-        [HttpGet("staff/{staffId}")]
+        [HttpGet("transactions-by-staff")]
         public async Task<IActionResult> GetTransactionsByStaffId(string staffId)
         {
             var transactions = await _transactionRepository.GetTransactionsByStaffIdAsync(staffId);
             return Ok(transactions);
         }
 
-        [HttpGet("all")]
-        public async Task<ActionResult<List<Services>>> GetAllServices()
+        [HttpGet("services")]
+        public async Task<IActionResult> GetAllServices()
         {
             var services = await _transactionRepository.GetAllServicesAsync();
             return Ok(services);
-        }
-
-        [HttpPost("process")]
-        public async Task<IActionResult> ProcessService([FromBody] ServiceRequestDto request)
-        {
-            var result = await _transactionRepository.ProcessServiceAsync(request.ClientId, request.StaffId, request.ServiceId, request.Amount);
-            if (result)
-                return Ok();
-            return BadRequest();
         }
     }
 }

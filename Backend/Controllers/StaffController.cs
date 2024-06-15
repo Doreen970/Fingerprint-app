@@ -7,10 +7,9 @@ using Backend.Dtos;
 
 namespace Backend.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class StaffController : ControllerBase
     {
         private readonly IStaffRepository _staffRepository;
